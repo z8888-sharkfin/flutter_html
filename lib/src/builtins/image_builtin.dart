@@ -83,9 +83,13 @@ class ImageBuiltIn extends HtmlExtension {
     if (_matchesBase64Image(context)) {
       child = _base64ImageRender(context, imageStyle);
     } else if (_matchesAssetImage(context)) {
-      child = _assetImageRender(context, imageStyle);
+      return WidgetSpan(
+          child: _assetImageRender(context, imageStyle)
+      );
     } else if (_matchesNetworkImage(context)) {
-      child = _networkImageRender(context, imageStyle);
+      return WidgetSpan(
+          child: _networkImageRender(context, imageStyle)
+      );
     } else {
       // Our matcher went a little overboard and matched
       // something we can't render
@@ -179,7 +183,7 @@ class ImageBuiltIn extends HtmlExtension {
       assetPath,
       width: imageStyle.width?.value,
       height: imageStyle.height?.value,
-      fit: BoxFit.fill,
+      fit: BoxFit.fitWidth,
       bundle: assetBundle,
       package: assetPackage,
       errorBuilder: (ctx, error, stackTrace) {
@@ -193,23 +197,17 @@ class ImageBuiltIn extends HtmlExtension {
 
   Widget _networkImageRender(ExtensionContext context, Style imageStyle) {
     final element = context.styledElement as ImageElement;
-
-    return CssBoxWidget(
-      style: imageStyle,
-      childIsReplaced: true,
-      child: Image.network(
-        element.src,
-        width: imageStyle.width?.value,
-        height: imageStyle.height?.value,
-        fit: BoxFit.fill,
-        headers: networkHeaders,
-        errorBuilder: (ctx, error, stackTrace) {
-          return Text(
-            element.alt ?? "",
-            style: context.styledElement!.style.generateTextStyle(),
-          );
-        },
-      ),
+    return Image.network(
+      element.src,
+      width: imageStyle.width?.value,
+      fit: BoxFit.fitWidth,
+      headers: networkHeaders,
+      errorBuilder: (ctx, error, stackTrace) {
+        return Text(
+          element.alt ?? "",
+          style: context.styledElement!.style.generateTextStyle(),
+        );
+      },
     );
   }
 }
