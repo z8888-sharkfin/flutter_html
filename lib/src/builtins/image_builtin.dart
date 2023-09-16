@@ -84,11 +84,17 @@ class ImageBuiltIn extends HtmlExtension {
       child = _base64ImageRender(context, imageStyle);
     } else if (_matchesAssetImage(context)) {
       return WidgetSpan(
-          child: _assetImageRender(context, imageStyle)
+          child: Padding(
+            padding: const EdgeInsets.only(top: 5, bottom: 5),
+            child: _assetImageRender(context, imageStyle)
+          )
       );
     } else if (_matchesNetworkImage(context)) {
       return WidgetSpan(
-          child: _networkImageRender(context, imageStyle)
+          child: Padding(
+            padding: const EdgeInsets.only(top: 5, bottom: 5),
+            child: _networkImageRender(context, imageStyle),
+          )
       );
     } else {
       // Our matcher went a little overboard and matched
